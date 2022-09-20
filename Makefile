@@ -6,7 +6,7 @@ pull_api:
 	docker pull maslow123/library-users
 	docker pull maslow123/library-api-gateway
 
-infratest: 
+infratest: pull_api
 	docker-compose up -d --force-recreate testdb
 	echo Starting for db...
 	sleep 15
@@ -16,7 +16,7 @@ test:
 	cd users && make test
 	cd api-gateway && make test
 
-runapi: 
+runapi: infratest
 	docker-compose up -d --force-recreate userapi
 	docker-compose up -d --force-recreate apigateway
 
