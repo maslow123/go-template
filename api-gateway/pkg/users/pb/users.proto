@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package users;
+
+option go_package = "./pkg/users/pb";
+import "gogo.proto";    
+
+//  swagger:model User
+message User {  
+    // the id of the user
+    //
+    // example: 1
+    int32 id = 1;
+    // the name of the user
+    //
+    // example: Simple Name
+    string name = 2;
+    // the username of the user
+    //
+    // example: omamaolala
+    string username = 3;
+    // the hashed password of the user
+    //
+    // example: $2a$05$wQ8lYAdEw7ZzF3OSzWeCKee8wc0KWxbBqfJpNu.lb.f1rvuSyy/I2
+    string hashed_password = 4;    
+    // the address of the user
+    //
+    // example: simple address
+    string address = 5;
+    // the phone number of the user
+    //
+    // example: 08111111111
+    string phone_number = 6;
+    //  the level of the user, 0 for common user and 1 for super user (admin, etc)
+    //
+    //  example: 0
+    int32 level = 7;
+    // the time of created of the user, the format is unix timestamp
+    //
+    // example: 1663638063
+    int64 created_at = 8;
+}
+
+//  swagger:model RegisterRequest
+message RegisterRequest {        
+    //  the name for this user
+    //
+    //  required: true
+    //  example: Simple Name
+    string name = 1 [(gogoproto.moretags) = "validate:\"required\""];
+    //  the username for this user
+    //
+    //  required: true
+    //  example: omamaolala
+    string username = 2 [(gogoproto.moretags) = "validate:\"required\""];
+    //  the user password for this user
+    //
+    //  required: true
+    //  example: simplepassword
+    string password = 3 [(gogoproto.moretags) = "validate:\"required\""];
+    //  the address for this user
+    //
+    //  required: true
+    //  example: simple address
+    string address = 4 [(gogoproto.moretags) = "validate:\"required\""];
+    //  the phone number for this user
+    //
+    //  required: true
+    //  example: 08111111111
+    string phone_number = 5 [(gogoproto.moretags) = "validate:\"required\""];
+    //  the level for this user, level 0 = common user, level 1 = super user (admin, etc)
+    //
+    //  required: true
+    //  example: 0
+    int32 level = 6;
+}
+
+message RegisterResponse {
+    int32 id = 1;
+}
+
+//  swagger:model LoginRequest
+message LoginRequest {
+    //  the username of user must be fill
+    //
+    //  required: true
+    //  example: omamaolala  
+    string username = 1 [(gogoproto.moretags) = "validate:\"required\""];    
+    //  the password of user must be fill
+    //
+    //  required: true
+    //  example: simplepassword
+    string password = 2 [(gogoproto.moretags) = "validate:\"required\""];
+}
+
+message LoginResponse {
+    User user = 1;
+    string token = 2;
+}
+
+// Validate
+message ValidateRequest {
+    string token = 1 [(gogoproto.moretags) = "validate:\"required\""];
+}
+
+message ValidateResponse {
+    int32 user_id = 3;
+}
+
+//  swagger:model ErrorResponse
+message ErrorResponse {
+    //  error message from service
+    //
+    //  example: invalid-{field}
+    string error = 1;
+}
+
+service UserService {
+    rpc Register(RegisterRequest) returns (RegisterResponse) {}
+    rpc Login(LoginRequest) returns (LoginResponse) {}
+    rpc Validate(ValidateRequest) returns (ValidateResponse) {}
+}
+

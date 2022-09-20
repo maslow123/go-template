@@ -1,0 +1,15 @@
+version: '3'
+services:
+  api-gateway:
+    image: maslow123/library-api-gateway:latest
+    container_name: api-gateway
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - ${PORT}:${PORT}
+    restart: on-failure
+    volumes:
+      - api-gateway:/usr/src/app/    
+volumes:
+  api-gateway:

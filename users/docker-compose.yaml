@@ -1,0 +1,43 @@
+version: '3'
+services:  
+  testdbuser:
+    image: postgres:latest
+    container_name: testdbuser
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+      PGPASSWORD: ${DB_PASS}
+      PGDATA: /data
+    ports:
+      - "5434:5432"
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+    networks:
+      - user
+  migratedbuser:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+    command: ["-path", "/migrations", "-database",  "postgresql://${DB_USERNAME}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable", "up"]
+    links:
+      - testdbuser
+    networks:
+      - user
+  api:
+    image: maslow123/library-users:latest
+    container_name: api
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - ${PORT}:${PORT}
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/    
+volumes:
+  api:
+  database_postgres:
+networks:
+  user:
+    driver: bridge

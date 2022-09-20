@@ -1,0 +1,8 @@
+.env
+cover.out
+*.pb.go
+img/*
+pkg/tmp/*
+pkg/config/envs/test.env
+pkg/config/envs/dev.env
+go.sum

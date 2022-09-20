@@ -1,0 +1,197 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  ErrorResponse:
+    properties:
+      error:
+        description: error message from service
+        example: invalid-{field}
+        type: string
+        x-go-name: Error
+    type: object
+    x-go-package: github.com/maslow123/library-api-gateway/pkg/users/pb
+  LoginRequest:
+    properties:
+      password:
+        description: the password of user must be fill
+        example: simplepassword
+        type: string
+        x-go-name: Password
+      username:
+        description: the username of user must be fill
+        example: omamaolala
+        type: string
+        x-go-name: Username
+    required:
+    - username
+    - password
+    type: object
+    x-go-package: github.com/maslow123/library-api-gateway/pkg/users/pb
+  LoginResponse:
+    properties:
+      token:
+        type: string
+        x-go-name: Token
+      user:
+        $ref: '#/definitions/User'
+    type: object
+    x-go-package: github.com/maslow123/library-api-gateway/pkg/users/pb
+  RegisterRequest:
+    properties:
+      address:
+        description: the address for this user
+        example: simple address
+        type: string
+        x-go-name: Address
+      level:
+        description: the level for this user, level 0 = common user, level 1 = super
+          user (admin, etc)
+        example: 0
+        format: int32
+        type: integer
+        x-go-name: Level
+      name:
+        description: the name for this user
+        example: Simple Name
+        type: string
+        x-go-name: Name
+      password:
+        description: the user password for this user
+        example: simplepassword
+        type: string
+        x-go-name: Password
+      phone_number:
+        description: the phone number for this user
+        example: "08111111111"
+        type: string
+        x-go-name: PhoneNumber
+      username:
+        description: the username for this user
+        example: omamaolala
+        type: string
+        x-go-name: Username
+    required:
+    - name
+    - username
+    - password
+    - address
+    - phone_number
+    - level
+    type: object
+    x-go-package: github.com/maslow123/library-api-gateway/pkg/users/pb
+  RegisterResponse:
+    properties:
+      id:
+        format: int32
+        type: integer
+        x-go-name: Id
+    type: object
+    x-go-package: github.com/maslow123/library-api-gateway/pkg/users/pb
+  User:
+    properties:
+      address:
+        description: the address of the user
+        example: simple address
+        type: string
+        x-go-name: Address
+      created_at:
+        description: the time of created of the user, the format is unix timestamp
+        example: 1663638063
+        format: int64
+        type: integer
+        x-go-name: CreatedAt
+      hashed_password:
+        description: the hashed password of the user
+        example: $2a$05$wQ8lYAdEw7ZzF3OSzWeCKee8wc0KWxbBqfJpNu.lb.f1rvuSyy/I2
+        type: string
+        x-go-name: HashedPassword
+      id:
+        description: the id of the user
+        example: 1
+        format: int32
+        type: integer
+        x-go-name: Id
+      level:
+        description: the level of the user, 0 for common user and 1 for super user
+          (admin, etc)
+        example: 0
+        format: int32
+        type: integer
+        x-go-name: Level
+      name:
+        description: the name of the user
+        example: Simple Name
+        type: string
+        x-go-name: Name
+      phone_number:
+        description: the phone number of the user
+        example: "08111111111"
+        type: string
+        x-go-name: PhoneNumber
+      username:
+        description: the username of the user
+        example: omamaolala
+        type: string
+        x-go-name: Username
+    type: object
+    x-go-package: github.com/maslow123/library-api-gateway/pkg/users/pb
+info:
+  description: Documentation for Library API
+  title: Library API.
+  version: 1.0.0
+paths:
+  /users/login:
+    post:
+      description: Returns a user data and the token
+      operationId: loginUser
+      parameters:
+      - description: The body to login user form
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/LoginRequest'
+      responses:
+        "200":
+          $ref: '#/responses/loginResponse'
+        "502":
+          description: ErrorResponse
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      tags:
+      - users
+  /users/register:
+    post:
+      description: Returns a user ID when user created
+      operationId: registerUser
+      parameters:
+      - description: The body to create new user
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/RegisterRequest'
+      responses:
+        "201":
+          $ref: '#/responses/registerResponse'
+        "502":
+          description: ErrorResponse
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+      tags:
+      - users
+produces:
+- application/json
+responses:
+  loginResponse:
+    description: User Data returns in the response
+    schema:
+      $ref: '#/definitions/LoginResponse'
+  registerResponse:
+    description: User ID returns in the response
+    schema:
+      $ref: '#/definitions/RegisterResponse'
+schemes:
+- http
+swagger: "2.0"

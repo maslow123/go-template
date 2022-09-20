@@ -1,0 +1,47 @@
+version: '3'
+services:  
+  testdb:
+    image: postgres:latest
+    container_name: testdb
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+      PGPASSWORD: ${DB_PASS}
+      PGDATA: /data
+    ports:
+      - '5433:5432'
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+    networks:
+      - library
+  migratedb:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+    command: ["-path", "/migrations", "-database",  "postgresql://${DB_USERNAME}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable", "up"]
+    links:
+      - testdb
+    networks:
+      - library
+  userapi:
+    image: maslow123/library-users:latest
+    container_name: testapiuser
+    ports:
+      - ${API_USER_PORT}:${API_USER_PORT}
+    restart: on-failure 
+    networks:
+      - library
+  apigateway:
+    image: maslow123/library-api-gateway:latest
+    container_name: testapigateway
+    ports:
+      - ${APIGATEWAY_PORT}:${APIGATEWAY_PORT}
+    restart: on-failure 
+    networks:
+      - library
+volumes:
+  database_postgres:
+networks:
+  library:
+    driver: bridge

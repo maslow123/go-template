@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package users;
+
+option go_package = "./pkg/pb";
+import "gogo.proto";    
+
+message User {    
+    int32 id = 1;
+    string name = 2;
+    string username = 3;
+    string hashed_password = 4;
+    string address = 5;
+    string phone_number = 6;
+    int32 level = 7;
+    int64 created_at = 8;
+}
+
+// Register
+message RegisterRequest {
+    string name = 1 [(gogoproto.moretags) = "validate:\"required\""];
+    string username = 2 [(gogoproto.moretags) = "validate:\"required\""];
+    string password = 3 [(gogoproto.moretags) = "validate:\"required\""];
+    string address = 4 [(gogoproto.moretags) = "validate:\"required\""];
+    string phone_number = 5 [(gogoproto.moretags) = "validate:\"required\""];
+    int32 level = 6;
+}
+
+message RegisterResponse {
+    int32 id = 1;
+}
+
+// Login
+message LoginRequest {
+    string username = 1 [(gogoproto.moretags) = "validate:\"required\""];
+    string password = 2 [(gogoproto.moretags) = "validate:\"required\""];
+}
+
+message LoginResponse {
+    User user = 1;
+    string token = 2;
+}
+
+// Validate
+message ValidateRequest {
+    string token = 1 [(gogoproto.moretags) = "validate:\"required\""];
+}
+
+message ValidateResponse {
+    int32 user_id = 3;
+}
+
+service UserService {
+    rpc Register(RegisterRequest) returns (RegisterResponse) {}
+    rpc Login(LoginRequest) returns (LoginResponse) {}
+    rpc Validate(ValidateRequest) returns (ValidateResponse) {}
+}
+
