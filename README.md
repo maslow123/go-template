@@ -32,6 +32,6 @@ a260dcd37bf0   maslow123/library-api-gateway:latest   "./main"                 1
 - Finish.
 
 ## Shut down all services
-- Make sure you're on root folder (keuanganku-service), and hit the command
+- Make sure you're on root folder, and hit the command
 ```$ make down```
 - Finish.
